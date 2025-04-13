@@ -45,7 +45,7 @@ class Button:
             self.display.screen.blit(self.txt, self.txt_rect)
             pygame.display.update()
         else:
-            pygame.draw.rect(self.display.screen, (190, 190, 190), [self.x, self.y, self.width, self.height], border_radius=50)
+            pygame.draw.rect(self.display.screen, (150, 150, 150), [self.x, self.y, self.width, self.height], border_radius=50)
             self.display.screen.blit(self.txt, self.txt_rect)
             pygame.display.update()
 

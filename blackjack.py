@@ -204,6 +204,7 @@ class BlackjackGame:
                         made_choice = True
                         display.reset_screen()
                         self.new_game()
+                        self.render_deck(d)
 
                     elif exit_button.check_hovering():
 
@@ -212,10 +213,24 @@ class BlackjackGame:
 
                         sys.exit()
 
+    def render_deck(self, display):
 
-    def render_text_background(self, text, display):
+        for i in range(5):
+
+            current_card = pygame.image.load(f"img/back-side.png")
+            current_card = pygame.transform.scale(current_card, (120, 160))
+            current_card_rect = current_card.get_rect(center=((800, 375 - (i * 10))))
+            display.screen.blit(current_card, current_card_rect)
+
+    def title_screen_cards(self, display, x, offset, card_scroll):
+
+        card_scroll_rect = card_scroll.get_rect(center=((x, (800 + offset))))
+        display.screen.blit(card_scroll, card_scroll_rect)
         
-        smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 100, bold=True) 
+
+    def render_text_background(self, text, display, text_size):
+        
+        smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', text_size, bold=True) 
 
         txt_ul = smallfont.render(text, True, (0, 0, 0)) 
         txt_ul_rect = txt_ul.get_rect(center=(595, 245))
@@ -244,7 +259,7 @@ class BlackjackGame:
 
         smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 100, bold=True) 
 
-        self.render_text_background("You Win!", display)
+        self.render_text_background("You Win!", display, 100)
 
         txt = smallfont.render("You Win!", True, (255, 255, 255)) 
         txt_rect = txt.get_rect(center=(600, 250))
@@ -256,7 +271,7 @@ class BlackjackGame:
 
         smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 100, bold=True) 
 
-        self.render_text_background("You Lose!", display)
+        self.render_text_background("You Lose!", display, 100)
 
         txt = smallfont.render("You Lose!", True, (255, 255, 255)) 
         txt_rect = txt.get_rect(center=(600, 250))
@@ -268,9 +283,20 @@ class BlackjackGame:
 
         smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 100, bold=True) 
 
-        self.render_text_background("Tie!", display)
+        self.render_text_background("Tie!", display, 100)
 
         txt = smallfont.render("Tie!", True, (255, 255, 255)) 
+        txt_rect = txt.get_rect(center=(600, 250))
+
+        display.screen.blit(txt, txt_rect)
+        pygame.display.update()
+
+    def draw_title_text(self, display):
+        smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 150, bold=True) 
+
+        self.render_text_background("Blackjack", display, 150)
+
+        txt = smallfont.render("Blackjack", True, (255, 255, 255)) 
         txt_rect = txt.get_rect(center=(600, 250))
 
         display.screen.blit(txt, txt_rect)
@@ -296,13 +322,31 @@ class BlackjackGame:
 
     def intro_screen(self, display):
 
-        new_game_button = Button("New Save", 320, 350, 250, 100, display)
-        load_game_button = Button("Load Save", 620, 350, 250, 100, display)
+        pygame.draw.rect(display.screen, (41, 196, 18), [0, 0, 1200, 700])
+        self.draw_title_text(display)
+
+        card_scroll_first = pygame.image.load("img/card-back-scroll.png")
+        card_scroll_second = pygame.image.load("img/card-back-scroll.png")
+
+        first_card_offset = 0
+        second_card_offset = 0
+
+        new_game_button = Button("New Save", 320, 400, 250, 100, display)
+        load_game_button = Button("Load Save", 620, 400, 250, 100, display)
 
         while self.play_game:
 
+            self.title_screen_cards(display, 120, first_card_offset, card_scroll_first)
+            self.title_screen_cards(display, 1080, second_card_offset, card_scroll_second)
+            first_card_offset -= 0.5
+            second_card_offset += 0.5
+
             for event in pygame.event.get():
                 
+                new_game_button.hovering_color()
+                load_game_button.hovering_color()
+                
+
                 if event.type == pygame.QUIT:
                     self.play_game = False
                     return False
@@ -316,8 +360,6 @@ class BlackjackGame:
                     elif load_game_button.check_hovering():
                         self.load_save()
                         return True
-
-
         
     
 
@@ -331,6 +373,7 @@ if __name__ == "__main__":
     if game.intro_screen(d):
 
         d.reset_screen()
+        game.render_deck(d)
 
         # Setting up hit and stand button for the GUI
 
