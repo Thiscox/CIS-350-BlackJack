@@ -313,7 +313,6 @@ class BlackjackGame:
         display.screen.blit(txt, txt_rect)
         pygame.display.update()
 
-<<<<<<< HEAD
     def draw_title_text(self, display):
         smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 150, bold=True) 
 
@@ -325,13 +324,12 @@ class BlackjackGame:
         display.screen.blit(txt, txt_rect)
         pygame.display.update()
 
-=======
     def bet_display(self, display):
 
         smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 100, bold=True)
         smallfont2 = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 50, bold=True)
 
-        self.render_text_background("Make Your Bet!", display)
+        self.render_text_background("Make Your Bet!", display, 100)
 
         pygame.draw.rect(display.screen, (0, 0, 0), [280, 320, 620, 100], border_radius=50)
         pygame.draw.rect(display.screen, (50, 50, 50), [290, 325, 600, 90], border_radius=50)
@@ -414,7 +412,6 @@ class BlackjackGame:
                         display.reset_screen()
                         self.new_game()
 
->>>>>>> bc594d426e50f94be8b72e1d5ce5ffc784c737f9
     def new_game(self):
         self.bet = 0
         self.player.hand.reset_hand()
@@ -441,6 +438,11 @@ class BlackjackGame:
 
         card_scroll_first = pygame.image.load("img/card-back-scroll.png")
         card_scroll_second = pygame.image.load("img/card-back-scroll.png")
+        first_rect = card_scroll_first.get_rect(center=(120, 0))
+        second_rect = card_scroll_second.get_rect(center=(1080, 0))
+
+        display.screen.blit(card_scroll_first, first_rect)
+        display.screen.blit(card_scroll_second, second_rect)
 
         first_card_offset = 0
         second_card_offset = 0
@@ -450,8 +452,6 @@ class BlackjackGame:
 
         while self.play_game:
 
-            self.title_screen_cards(display, 120, first_card_offset, card_scroll_first)
-            self.title_screen_cards(display, 1080, second_card_offset, card_scroll_second)
             first_card_offset -= 0.5
             second_card_offset += 0.5
 
