@@ -26,8 +26,7 @@ class BlackjackGame:
         
         # Variable to keep track of whether or not the game is being played
         self.play_game = True
-        self.is_betting = True
-
+        
         self.init_ui()
         pygame.init()
         self.new_game()
@@ -100,7 +99,7 @@ class BlackjackGame:
 
             # Load image from file and scale it down 
 
-            current_card = pygame.image.load(f"img/cards/{rank}_of_{suit}.png")
+            current_card = pygame.image.load(f"img\cards\{rank}_of_{suit}.png")
             current_card = pygame.transform.scale(current_card, (120, 160))
 
             # Calculate x value of card, center it, then draw it
@@ -119,7 +118,7 @@ class BlackjackGame:
 
             # Load image from file and scale it down 
 
-            current_card = pygame.image.load(f"img/cards/{rank}_of_{suit}.png")
+            current_card = pygame.image.load(f"img\cards\{rank}_of_{suit}.png")
             current_card = pygame.transform.scale(current_card, (120, 160))
 
             # Calculate x value of card, center it, then draw it
@@ -197,6 +196,26 @@ class BlackjackGame:
 
         display.screen.blit(goal_txt, goal_txt_rect)
 
+    def render_play_bet(self, display):
+
+        # Set up font object
+
+        smallfont = pygame.font.Font('./BowlbyOneSC-Regular.ttf', 20) 
+        
+        # Draw backdrop
+
+        pygame.draw.rect(display.screen, (0, 0, 0), [20, 20, 140, 70], border_radius=50)
+        pygame.draw.rect(display.screen, (50, 50, 50), [25, 25, 130, 60], border_radius=50)
+
+        # Render goal and center with backdrop
+
+        bet_txt = smallfont.render(f"Bet: {self.bet}", True , (255, 255, 255))
+        bet_txt_rect = bet_txt.get_rect(center=(90, 55))
+
+        # Update the screen with the text objects
+
+        display.screen.blit(bet_txt, bet_txt_rect)
+
     def play_again_render(self, display):
         
         # Create both the play and exit button and create boolean
@@ -225,10 +244,8 @@ class BlackjackGame:
 
                     if play_button.check_hovering():
                         made_choice = True
-                        self.is_betting = True
                         display.reset_screen()
                         self.new_game()
-                        self.render_deck(d)
 
                     elif exit_button.check_hovering():
 
@@ -237,24 +254,10 @@ class BlackjackGame:
 
                         sys.exit()
 
-    def render_deck(self, display):
 
-        for i in range(5):
-
-            current_card = pygame.image.load(f"img/back-side.png")
-            current_card = pygame.transform.scale(current_card, (120, 160))
-            current_card_rect = current_card.get_rect(center=((800, 375 - (i * 10))))
-            display.screen.blit(current_card, current_card_rect)
-
-    def title_screen_cards(self, display, x, offset, card_scroll):
-
-        card_scroll_rect = card_scroll.get_rect(center=((x, (800 + offset))))
-        display.screen.blit(card_scroll, card_scroll_rect)
+    def render_text_background(self, text, display):
         
-
-    def render_text_background(self, text, display, text_size):
-        
-        smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', text_size, bold=True) 
+        smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 100, bold=True) 
 
         txt_ul = smallfont.render(text, True, (0, 0, 0)) 
         txt_ul_rect = txt_ul.get_rect(center=(595, 245))
@@ -283,7 +286,7 @@ class BlackjackGame:
 
         smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 100, bold=True) 
 
-        self.render_text_background("You Win!", display, 100)
+        self.render_text_background("You Win!", display)
 
         txt = smallfont.render("You Win!", True, (255, 255, 255)) 
         txt_rect = txt.get_rect(center=(600, 250))
@@ -295,7 +298,7 @@ class BlackjackGame:
 
         smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 100, bold=True) 
 
-        self.render_text_background("You Lose!", display, 100)
+        self.render_text_background("You Lose!", display)
 
         txt = smallfont.render("You Lose!", True, (255, 255, 255)) 
         txt_rect = txt.get_rect(center=(600, 250))
@@ -307,20 +310,9 @@ class BlackjackGame:
 
         smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 100, bold=True) 
 
-        self.render_text_background("Tie!", display, 100)
+        self.render_text_background("Tie!", display)
 
         txt = smallfont.render("Tie!", True, (255, 255, 255)) 
-        txt_rect = txt.get_rect(center=(600, 250))
-
-        display.screen.blit(txt, txt_rect)
-        pygame.display.update()
-
-    def draw_title_text(self, display):
-        smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 150, bold=True) 
-
-        self.render_text_background("Blackjack", display, 150)
-
-        txt = smallfont.render("Blackjack", True, (255, 255, 255)) 
         txt_rect = txt.get_rect(center=(600, 250))
 
         display.screen.blit(txt, txt_rect)
@@ -331,7 +323,7 @@ class BlackjackGame:
         smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 100, bold=True)
         smallfont2 = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 50, bold=True)
 
-        self.render_text_background("Make Your Bet!", display, 100)
+        self.render_text_background("Make Your Bet!", display)
 
         pygame.draw.rect(display.screen, (0, 0, 0), [280, 320, 620, 100], border_radius=50)
         pygame.draw.rect(display.screen, (50, 50, 50), [290, 325, 600, 90], border_radius=50)
@@ -411,7 +403,6 @@ class BlackjackGame:
 
                     elif submit.check_hovering():
                         made_choice = True
-                        self.is_betting = False
                         display.reset_screen()
                         self.new_game()
 
@@ -435,34 +426,13 @@ class BlackjackGame:
 
     def intro_screen(self, display):
 
-        pygame.draw.rect(display.screen, (41, 196, 18), [0, 0, 1200, 700])
-        self.draw_title_text(display)
-
-        card_scroll_first = pygame.image.load("img/card-back-scroll.png")
-        card_scroll_second = pygame.image.load("img/card-back-scroll.png")
-        first_rect = card_scroll_first.get_rect(center=(120, 0))
-        second_rect = card_scroll_second.get_rect(center=(1080, 0))
-
-        display.screen.blit(card_scroll_first, first_rect)
-        display.screen.blit(card_scroll_second, second_rect)
-
-        first_card_offset = 0
-        second_card_offset = 0
-
-        new_game_button = Button("New Save", 320, 400, 250, 100, display)
-        load_game_button = Button("Load Save", 620, 400, 250, 100, display)
+        new_game_button = Button("New Save", 320, 350, 250, 100, display)
+        load_game_button = Button("Load Save", 620, 350, 250, 100, display)
 
         while self.play_game:
 
-            first_card_offset -= 0.5
-            second_card_offset += 0.5
-
             for event in pygame.event.get():
                 
-                new_game_button.hovering_color()
-                load_game_button.hovering_color()
-                
-
                 if event.type == pygame.QUIT:
                     self.play_game = False
                     return False
@@ -476,6 +446,8 @@ class BlackjackGame:
                     elif load_game_button.check_hovering():
                         self.load_save()
                         return True
+
+
         
     
 
@@ -489,7 +461,6 @@ if __name__ == "__main__":
     if game.intro_screen(d):
 
         d.reset_screen()
-        game.render_deck(d)
 
         # Setting up hit and stand button for the GUI
 
@@ -499,20 +470,27 @@ if __name__ == "__main__":
 
         game.render_cards(d)
         game.render_money(d)
-
+        game.bet_display(d)
+        game.bet_render(d)
+        game.render_goal(d)
+        game.render_play_bet(d)
         # Constant loop to keep the game running as long as the player doesn't exit out of the window.
 
         while d.running and game.play_game:
-
-            if game.is_betting:
-                game.bet_display(d)
-                game.bet_render(d)
 
             # Player continues to hit until they stand. Then dealer does their turns.
             for event in pygame.event.get():    
 
                 # This renders all of the buttons (with hovering functionality)
                 # and renders the necessary text elements
+                
+                #If money hits 0 add 100 and set goal back to 2000
+                if game.money_total == 0:
+                    game.money_total += 100
+                    game.goal = 2000
+
+                if game.money_total >= game.goal:
+                    game.goal *= 2
 
                 hit_button.hovering_color()
                 stand_button.hovering_color()
@@ -522,8 +500,9 @@ if __name__ == "__main__":
                 game.render_cards(d)
                 game.render_goal(d)
 
-                if game.money_total >= game.goal:
-                    game.goal *= 2
+                if game.bet == 0:
+                    game.bet_display(d)
+                    game.bet_render(d)
 
                 if event.type == pygame.QUIT: 
                     game.save_game()
@@ -547,12 +526,15 @@ if __name__ == "__main__":
                 #Checks if player stands or busts after every turn then goes to dealers turn if player stood
                 if game.player.hand.is_bust():
                     print("Player busts/ new game")
+                    print(game.bet)
                     game.money_total -= game.bet
                     game.render_cards(d)
                     game.lose_display(d)
                     game.render_scores(d)
                     game.render_money(d)
+                    game.render_play_bet(d)
                     game.play_again_render(d)
+                    game.bet = 0
                 elif game.player.is_standing:
                     print("Dealer Turn")
                     while game.dealer.is_standing == False:
@@ -564,6 +546,8 @@ if __name__ == "__main__":
                         game.score_round(d)
                         game.render_scores(d)
                         game.render_money(d)
+                        game.render_play_bet(d)
+                        game.bet = 0
                         game.play_again_render(d)
 
             pygame.display.flip()

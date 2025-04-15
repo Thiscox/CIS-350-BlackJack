@@ -11,7 +11,10 @@ class Hand:
         # Adds the given card to the hand and calculates the now total of the hand
 
         self.current_hand.append(card)
-        self.total_hand_value += card.get_blackjack_value()
+        if card.get_blackjack_value() == 11 and self.total_hand_value+11 > 21:
+            self.total_hand_value += 1
+        else:
+            self.total_hand_value += card.get_blackjack_value()
 
     def reset_hand(self):
         self.current_hand = []
