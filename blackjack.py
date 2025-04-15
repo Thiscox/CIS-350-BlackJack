@@ -255,9 +255,9 @@ class BlackjackGame:
                         sys.exit()
 
 
-    def render_text_background(self, text, display):
+    def render_text_background(self, text, display, text_size=100):
         
-        smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 100, bold=True) 
+        smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', text_size, bold=True) 
 
         txt_ul = smallfont.render(text, True, (0, 0, 0)) 
         txt_ul_rect = txt_ul.get_rect(center=(595, 245))
@@ -318,17 +318,28 @@ class BlackjackGame:
         display.screen.blit(txt, txt_rect)
         pygame.display.update()
 
+    def draw_title_text(self, display):
+        smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 150, bold=True) 
+
+        self.render_text_background("Blackjack", display, 150)
+
+        txt = smallfont.render("Blackjack", True, (255, 255, 255)) 
+        txt_rect = txt.get_rect(center=(600, 250))
+
+        display.screen.blit(txt, txt_rect)
+        pygame.display.update()
+
     def bet_display(self, display):
 
         smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 100, bold=True)
         smallfont2 = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 50, bold=True)
 
-        self.render_text_background("Make Your Bet!", display)
+        self.render_text_background("Make Your Bet!", display, 100)
 
         pygame.draw.rect(display.screen, (0, 0, 0), [280, 320, 620, 100], border_radius=50)
         pygame.draw.rect(display.screen, (50, 50, 50), [290, 325, 600, 90], border_radius=50)
 
-        txt = smallfont.render("Make Your Bet!", True, (255,255, 255),) 
+        txt = smallfont.render("Make Your Bet!", True, (255,255, 255)) 
         txt_rect = txt.get_rect(center=(600, 250))
 
         txt2 = smallfont2.render(f'Bet: {self.bet}', True, (255, 255, 255),) 
@@ -426,13 +437,34 @@ class BlackjackGame:
 
     def intro_screen(self, display):
 
-        new_game_button = Button("New Save", 320, 350, 250, 100, display)
-        load_game_button = Button("Load Save", 620, 350, 250, 100, display)
+        pygame.draw.rect(display.screen, (41, 196, 18), [0, 0, 1200, 700])
+        self.draw_title_text(display)
+
+        card_scroll_first = pygame.image.load("img/card-back-scroll.png")
+        card_scroll_second = pygame.image.load("img/card-back-scroll.png")
+        first_rect = card_scroll_first.get_rect(center=(120, 0))
+        second_rect = card_scroll_second.get_rect(center=(1080, 0))
+
+        display.screen.blit(card_scroll_first, first_rect)
+        display.screen.blit(card_scroll_second, second_rect)
+
+        first_card_offset = 0
+        second_card_offset = 0
+
+        new_game_button = Button("New Save", 320, 400, 250, 100, display)
+        load_game_button = Button("Load Save", 620, 400, 250, 100, display)
 
         while self.play_game:
 
+            first_card_offset -= 0.5
+            second_card_offset += 0.5
+
             for event in pygame.event.get():
                 
+                new_game_button.hovering_color()
+                load_game_button.hovering_color()
+                
+
                 if event.type == pygame.QUIT:
                     self.play_game = False
                     return False
@@ -499,6 +531,7 @@ if __name__ == "__main__":
                 game.render_money(d)
                 game.render_cards(d)
                 game.render_goal(d)
+                game.render_play_bet(d)
 
                 if game.bet == 0:
                     game.bet_display(d)
