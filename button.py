@@ -49,8 +49,6 @@ class Button:
             self.display.screen.blit(self.txt, self.txt_rect)
             pygame.display.update()
 
-    def is_clicked(self):
-        return self.clicked
 
 
 

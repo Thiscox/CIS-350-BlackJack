@@ -181,6 +181,8 @@ class BlackJackTests(unittest.TestCase):
 
     def test_blackjack_score_round_player_lose(self):
         b = BlackjackGame()
+        b.player = Player(True)
+        b.dealer = Player(False)
         d = Display(1200, 700)
         b.player.hand.draw_card(Card("spades", "9"))
         b.dealer.hand.draw_card(Card("hearts", "jack"))
@@ -190,6 +192,8 @@ class BlackJackTests(unittest.TestCase):
 
     def test_blackjack_score_round_player_tie(self):
         b = BlackjackGame()
+        b.player = Player(True)
+        b.dealer = Player(False)
         d = Display(1200, 700)
         b.player.hand.draw_card(Card("spades", "jack"))
         b.player.hand.draw_card(Card("clubs", "king"))
@@ -222,7 +226,9 @@ class BlackJackTests(unittest.TestCase):
 
     def test_blackjack_dealer_turn_hit(self):
         b = BlackjackGame()
-        b.dealer.hand.draw_card(Card("spades", "10"))
+        dealer = Player(False)
+        dealer.hand.draw_card(Card("spades", "10"))
+        b.dealer = dealer
         b.dealer_turn()
         self.assertEqual(b.dealer.is_standing, False)
         self.assertEqual(len(b.dealer.hand.current_hand), 2)
