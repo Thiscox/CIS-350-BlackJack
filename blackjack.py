@@ -26,7 +26,8 @@ class BlackjackGame:
         
         # Variable to keep track of whether or not the game is being played
         self.play_game = True
-        
+        self.is_betting = True
+
         self.init_ui()
         pygame.init()
         self.new_game()
@@ -224,6 +225,7 @@ class BlackjackGame:
 
                     if play_button.check_hovering():
                         made_choice = True
+                        self.is_betting = True
                         display.reset_screen()
                         self.new_game()
                         self.render_deck(d)
@@ -409,11 +411,11 @@ class BlackjackGame:
 
                     elif submit.check_hovering():
                         made_choice = True
+                        self.is_betting = False
                         display.reset_screen()
                         self.new_game()
 
     def new_game(self):
-        self.bet = 0
         self.player.hand.reset_hand()
         self.player.is_standing = False
         self.dealer.hand.reset_hand()
@@ -497,11 +499,14 @@ if __name__ == "__main__":
 
         game.render_cards(d)
         game.render_money(d)
-        game.bet_display(d)
-        game.bet_render(d)
+
         # Constant loop to keep the game running as long as the player doesn't exit out of the window.
 
         while d.running and game.play_game:
+
+            if game.is_betting:
+                game.bet_display(d)
+                game.bet_render(d)
 
             # Player continues to hit until they stand. Then dealer does their turns.
             for event in pygame.event.get():    
