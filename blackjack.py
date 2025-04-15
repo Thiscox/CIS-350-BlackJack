@@ -16,6 +16,8 @@ class BlackjackGame:
         self.deck = Deck()
         self.player = Player(True)
         self.dealer = Player(False)
+        self.goal = 2000
+        self.bet = 0
 
         self.outcome = ""
 
@@ -40,7 +42,7 @@ class BlackjackGame:
         self.player.hand.draw_card(self.deck.deal_card())
         self.player.hand.draw_card(self.deck.deal_card())
         self.dealer.hand.draw_card(self.deck.deal_card())
-        self.dealer.hand.draw_card(self.deck.deal_card())
+
     
     def init_ui(self):
         pass
@@ -54,18 +56,18 @@ class BlackjackGame:
         #Figure out all of the betting(player wins or loses)
         if self.dealer.hand.get_hand_value() > 21:
             self.outcome = "win"
-            self.money_total += 100
+            self.money_total += self.bet
             self.win_display(display)
         elif self.player.hand.get_hand_value() == self.dealer.hand.get_hand_value():
             self.outcome = "tie"
             self.tie_display(display)
         elif self.player.hand.get_hand_value() > self.dealer.hand.get_hand_value():
             self.outcome = "win"
-            self.money_total += 100
+            self.money_total += self.bet
             self.win_display(display)
         elif self.player.hand.get_hand_value() < self.dealer.hand.get_hand_value():
             self.outcome = "lose"
-            self.money_total -= 100
+            self.money_total -= self.bet
             self.lose_display(display)
 
     def dealer_turn(self):
@@ -97,7 +99,7 @@ class BlackjackGame:
 
             # Load image from file and scale it down 
 
-            current_card = pygame.image.load(f"img\cards\{rank}_of_{suit}.png")
+            current_card = pygame.image.load(f"img/cards/{rank}_of_{suit}.png")
             current_card = pygame.transform.scale(current_card, (120, 160))
 
             # Calculate x value of card, center it, then draw it
@@ -116,7 +118,7 @@ class BlackjackGame:
 
             # Load image from file and scale it down 
 
-            current_card = pygame.image.load(f"img\cards\{rank}_of_{suit}.png")
+            current_card = pygame.image.load(f"img/cards/{rank}_of_{suit}.png")
             current_card = pygame.transform.scale(current_card, (120, 160))
 
             # Calculate x value of card, center it, then draw it
@@ -173,6 +175,26 @@ class BlackjackGame:
         # Update the screen with the text objects
 
         display.screen.blit(money_txt, money_txt_rect)
+
+    def render_goal(self, display):
+
+        # Set up font object
+
+        smallfont = pygame.font.Font('./BowlbyOneSC-Regular.ttf', 20) 
+        
+        # Draw backdrop
+
+        pygame.draw.rect(display.screen, (0, 0, 0), [640, 620, 220, 70], border_radius=50)
+        pygame.draw.rect(display.screen, (50, 50, 50), [650, 625, 200, 60], border_radius=50)
+
+        # Render goal and center with backdrop
+
+        goal_txt = smallfont.render(f"Goal: {self.goal}", True , (255, 255, 255))
+        goal_txt_rect = goal_txt.get_rect(center=(745, 655))
+
+        # Update the screen with the text objects
+
+        display.screen.blit(goal_txt, goal_txt_rect)
 
     def play_again_render(self, display):
         
@@ -276,7 +298,96 @@ class BlackjackGame:
         display.screen.blit(txt, txt_rect)
         pygame.display.update()
 
+    def bet_display(self, display):
+
+        smallfont = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 100, bold=True)
+        smallfont2 = pygame.font.SysFont('./BowlbyOneSC-Regular.ttf', 50, bold=True)
+
+        self.render_text_background("Make Your Bet!", display)
+
+        pygame.draw.rect(display.screen, (0, 0, 0), [280, 320, 620, 100], border_radius=50)
+        pygame.draw.rect(display.screen, (50, 50, 50), [290, 325, 600, 90], border_radius=50)
+
+        txt = smallfont.render("Make Your Bet!", True, (255,255, 255),) 
+        txt_rect = txt.get_rect(center=(600, 250))
+
+        txt2 = smallfont2.render(f'Bet: {self.bet}', True, (255, 255, 255),) 
+        txt_rect2 = txt.get_rect(center=(830, 360))
+
+        display.screen.blit(txt, txt_rect)
+        display.screen.blit(txt2, txt_rect2)
+        pygame.display.update()
+
+    def bet_render(self, display):
+        
+        # Create both the play and exit button and create boolean
+        # to keep together the while loop
+
+        sub1000 = Button("-1000", 310, 370, 75, 25, display)
+        sub500 = Button("-500", 390, 370, 75, 25, display)
+        sub100 = Button("-100", 470, 370, 75, 25, display)
+        submit = Button("Bet", 550, 370, 75, 25, display)
+        add100 = Button("+100", 630, 370, 75, 25, display)
+        add500 = Button("+500", 710, 370, 75, 25, display)
+        add1000 = Button("+1000", 790, 370, 75, 25, display)
+        made_choice = False
+
+        while not made_choice:
+            
+            # Wait for player to make choice
+
+            sub1000.hovering_color()
+            sub500.hovering_color()
+            sub100.hovering_color()
+            submit.hovering_color()
+            add100.hovering_color()
+            add500.hovering_color()
+            add1000.hovering_color()
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+
+                    # If the player clicks on "Play Again", 
+                    # Restart the game and reset the display
+
+                    if sub1000.check_hovering():
+                        if self.bet-1000 >= 0:
+                            self.bet -= 1000
+                            self.bet_display(display)
+
+                    elif sub500.check_hovering():
+                        if self.bet-500 >= 0:
+                            self.bet -= 500
+                            self.bet_display(display)
+                    
+                    elif sub100.check_hovering():
+                        if self.bet-100 >= 0:
+                            self.bet -= 100
+                            self.bet_display(display)
+
+                    elif add100.check_hovering():
+                        if self.bet+100 <= self.money_total:
+                            self.bet += 100
+                            self.bet_display(display)
+
+                    elif add500.check_hovering():
+                        if self.bet+500 <= self.money_total:
+                            self.bet += 500
+                            self.bet_display(display)
+                    
+                    elif add1000.check_hovering():
+                        if self.bet+1000 <= self.money_total:
+                            self.bet += 1000
+                            self.bet_display(display)
+
+                    elif submit.check_hovering():
+                        made_choice = True
+                        display.reset_screen()
+                        self.new_game()
+
     def new_game(self):
+        self.bet = 0
         self.player.hand.reset_hand()
         self.player.is_standing = False
         self.dealer.hand.reset_hand()
@@ -339,13 +450,14 @@ if __name__ == "__main__":
         quit_button = Button("Quit", 980, 75, 150, 75, d)
 
         game.render_cards(d)
-
+        game.render_money(d)
+        game.bet_display(d)
+        game.bet_render(d)
         # Constant loop to keep the game running as long as the player doesn't exit out of the window.
 
         while d.running and game.play_game:
-            
+
             # Player continues to hit until they stand. Then dealer does their turns.
-            
             for event in pygame.event.get():    
 
                 # This renders all of the buttons (with hovering functionality)
@@ -357,6 +469,10 @@ if __name__ == "__main__":
                 game.render_scores(d)
                 game.render_money(d)
                 game.render_cards(d)
+                game.render_goal(d)
+
+                if game.money_total >= game.goal:
+                    game.goal *= 2
 
                 if event.type == pygame.QUIT: 
                     game.save_game()
@@ -380,7 +496,7 @@ if __name__ == "__main__":
                 #Checks if player stands or busts after every turn then goes to dealers turn if player stood
                 if game.player.hand.is_bust():
                     print("Player busts/ new game")
-                    game.money_total -= 100
+                    game.money_total -= game.bet
                     game.render_cards(d)
                     game.lose_display(d)
                     game.render_scores(d)
