@@ -61,10 +61,6 @@ class DeckTests(unittest.TestCase):
         d.reset_deck()
         self.assertEqual(len(d.current_deck), 52)
 
-    def deal_card(self):
-        d = Deck()
-        self.assertEqual(type(d.deal_card), type(Card))
-
 class CardTests(unittest.TestCase):
     def test_card_init(self):
         c = Card("spades", "9")

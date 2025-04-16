@@ -42,6 +42,7 @@ class BlackjackGame:
         self.player.hand.draw_card(self.deck.deal_card())
         self.player.hand.draw_card(self.deck.deal_card())
         self.dealer.hand.draw_card(self.deck.deal_card())
+        self.dealer.hand.draw_card(self.deck.deal_card())
 
     
     def init_ui(self):
@@ -65,7 +66,7 @@ class BlackjackGame:
             self.outcome = "win"
             self.money_total += self.bet
             self.win_display(display)
-        elif self.player.hand.get_hand_value() < self.dealer.hand.get_hand_value():
+        else:
             self.outcome = "lose"
             self.money_total -= self.bet
             self.lose_display(display)
@@ -416,6 +417,9 @@ class BlackjackGame:
                         made_choice = True
                         display.reset_screen()
                         self.new_game()
+                
+                elif event.type == pygame.QUIT:
+                    sys.exit()
 
     def new_game(self):
         self.player.hand.reset_hand()
@@ -479,7 +483,6 @@ class BlackjackGame:
                         self.load_save()
                         return True
 
-
         
     
 
@@ -496,9 +499,9 @@ if __name__ == "__main__":
 
         # Setting up hit and stand button for the GUI
 
-        hit_button = Button("Hit", 980, 480, 150, 75, d)
-        stand_button = Button("Stand", 980, 355, 150, 75, d)
-        quit_button = Button("Quit", 980, 75, 150, 75, d)
+        hit_button = Button("Hit", 980, 580, 150, 75, d)
+        stand_button = Button("Stand", 980, 455, 150, 75, d)
+        quit_button = Button("Quit", 980, 45, 150, 75, d)
 
         game.render_cards(d)
         game.render_money(d)
@@ -574,13 +577,12 @@ if __name__ == "__main__":
                         game.dealer_turn()
                         
 
-                    if game.dealer.is_standing:
-                        game.render_cards(d)
-                        game.score_round(d)
-                        game.render_scores(d)
-                        game.render_money(d)
-                        game.render_play_bet(d)
-                        game.bet = 0
-                        game.play_again_render(d)
+                    game.render_cards(d)
+                    game.score_round(d)
+                    game.render_scores(d)
+                    game.render_money(d)
+                    game.render_play_bet(d)
+                    game.bet = 0
+                    game.play_again_render(d)
 
             pygame.display.flip()
